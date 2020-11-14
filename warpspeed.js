@@ -7,8 +7,6 @@ class Star {
   }
 }
 
-// modernised, without running instances
-
 class WarpSpeed {
   SPEED = 0.7
   TARGET_SPEED = this.SPEED
@@ -37,8 +35,8 @@ class WarpSpeed {
   constructor(targetId, config) {
     this._targetId = targetId
     const canvas = document.getElementById(this._targetId)
-    canvas.width = 1
-    canvas.height = 1
+    // canvas.width = 1
+    // canvas.height = 1
     const ctx = canvas.getContext("2d")
     ctx.fillStyle = this.BACKGROUND_COLOR
     ctx.fillRect(0, 0, 1, 1)
@@ -61,6 +59,8 @@ class WarpSpeed {
     const canvas = document.getElementById(this._targetId)
 
     if (!this.PAUSED) {
+      console.log(canvas.width)
+
       if (this._prevW != canvas.clientWidth || this._prevH != canvas.clientHeight) {
         canvas.width = (canvas.clientWidth < 10 ? 10 : canvas.clientWidth) * (window.devicePixelRatio || 1)
         canvas.height = (canvas.clientHeight < 10 ? 10 : canvas.clientHeight) * (window.devicePixelRatio || 1)
@@ -164,3 +164,11 @@ class WarpSpeed {
     }
   }
 }
+
+AFRAME.registerComponent("warpspeed", {
+  schema: { default: "" },
+
+  init() {
+    new WarpSpeed("my-canvas")
+  },
+})
