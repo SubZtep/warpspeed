@@ -1,67 +1,110 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8" />
-<title>WarpSpeed.js</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
-<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-<script type="text/javascript" src="warpspeed.js"></script>
-  <script>
+  <head>
+    <meta charset="UTF-8" />
+    <title>WarpSpeed.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script type="text/javascript" src="warpspeed.js"></script>
+  </head>
+  <body>
+    <a-scene vr-mode-ui="enabled: false" stats background="color: #8a0303">
+      <a-camera></a-camera>
+      <a-entity
+        id="box"
+        geometry="primitive: box; width: 10; height: 10; depth: 10;"
+        position="5 2 -15"
+        rotation="80 20 0"
+        warpspeed
+      >
+      </a-entity>
+    </a-scene>
+    <script type="text/javascript">
+      const el = document.querySelector("#box")
 
-    function togglePause() {
-      // let elm = document.querySelector("#box")
-      // if (elm.isPlaying) {
-      //   elm.pause()
-      // } else {
-      //   elm.play()
-      // }
-      // console.log("IS PLAYING", elm.isPlaying)
-    }
+      const settings = {
+        resolution: 512,
+        speed: 0.7,
+        targetSpeed: 0.7,
+        speedAdjFactor: 0.03,
+        density: 0.7,
+        useCircles: true,
+        depthAplha: true,
+        warpEffect: true,
+        warpEffectLength: 5,
+        starScale: 3,
+        backgroundColor: "#100a1a",
+        starColor: "#ffffff",
+      }
 
-  </script>
-</head>
-<body onclick="togglePause()">
-  <a-scene vr-mode-ui="enabled: false">
-    <a-camera look-controls-enabled="false" wasd-controls-enabled="false"></a-camera>
-    <a-entity id="box" geometry="primitive: box; width: 10; height: 10; depth: 10;" position="5 2 -15" rotation="-10 20 0"
-      warpspeed>
-    </a-entity>
-  </a-scene>
-  <script>
-    const el = document.querySelector("#box")
+      const elset = {
+        primitive: "box",
+        width: 10,
+        height: 10,
+        depth: 10
+      }
 
-    const settings = {
-      speed: 0.7,
-      targetSpeed: 0.7,
-      speedAdjFactor: 0.03,
-      density: 0.7,
-      useCircles: true,
-      depthAplha: true,
-      warpEffect: true,
-      warpEffectLength: 5,
-      starScale: 3,
-      backgroundColor: "#100a1a",
-      starColor: "#ffffff",
-    }
+      const position = {
+        x: 5,
+        y: 2,
+        z: -15,
+      }
 
-    const update = () => {
-      const data = Object.entries(settings).map(([key, value]) => `${key}: ${value}`).join("; ")
-      el.setAttribute("warpspeed", data)
-    }
+      const rotation = {
+        x: -10,
+        y: 20,
+        z: 0,
+      }
 
-    const gui = new dat.GUI()
-    // gui.add(settings, "speed", 0, 10, 0.1)
-    gui.add(settings, "targetSpeed", 0, 10, 0.1).onChange(update)
-    // gui.add(settings, "speedAdjFactor", 0, 1, 0.01)
-    gui.add(settings, "density", 0.1, 100.0, 0.1).onChange(update)
-    gui.add(settings, "useCircles").onChange(update)
-    gui.add(settings, "depthAplha").onChange(update)
-    gui.add(settings, "warpEffect").onChange(update)
-    gui.add(settings, "warpEffectLength", 0, 100, 1).onChange(update)
-    gui.add(settings, "starScale", 1, 100, 1).onChange(update)
-    gui.addColor(settings, "backgroundColor").onChange(update)
-      // gui.addColor(settings, "starColor").onChange(update)
+      const parseAttr = obj =>
+        Object.entries(obj)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join("; ")
+      const update = () => el.setAttribute("warpspeed", parseAttr(settings))
 
-  </script>
-</body>
+      const gui = new dat.GUI()
+
+      gui.add({ pause: false }, "pause").onChange(isPause => {
+        if (isPause) {
+          el.pause()
+        } else {
+          el.play()
+        }
+      })
+
+      const ws = gui.addFolder("Warpspeed")
+      ws.add(settings, "resolution", [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]).onChange(update)
+      // ws.add(settings, "speed", 0, 10, 0.1)
+      ws.add(settings, "targetSpeed", 0, 10, 0.1).onChange(update)
+      // ws.add(settings, "speedAdjFactor", 0, 1, 0.01)
+      ws.add(settings, "density", 0.1, 100.0, 0.1).onChange(update)
+      ws.add(settings, "useCircles").onChange(update)
+      ws.add(settings, "depthAplha").onChange(update)
+      ws.add(settings, "warpEffect").onChange(update)
+      ws.add(settings, "warpEffectLength", 0, 100, 1).onChange(update)
+      ws.add(settings, "starScale", 1, 100, 1).onChange(update)
+      ws.addColor(settings, "backgroundColor").onChange(update)
+      ws.addColor(settings, "starColor").onChange(update)
+
+
+      const setGeometry = () => el.setAttribute("geometry", parseAttr(elset))
+      const els = gui.addFolder("Entity")
+      els.add(elset, "primitive", ["box", "plane"]).onChange(setGeometry)
+      els.add(elset, "width", 0.1, 10.0, 0.1).onChange(setGeometry)
+      els.add(elset, "height", 0.1, 10.0, 0.1).onChange(setGeometry)
+      els.add(elset, "depth", 0.1, 10.0, 0.1).onChange(setGeometry)
+
+
+      const setPosition = () => el.setAttribute("position", `${position.x} ${position.y} ${position.z}`)
+      const pos = gui.addFolder("Position")
+      pos.add(position, "x", -100, 100).onChange(setPosition)
+      pos.add(position, "y", -100, 100).onChange(setPosition)
+      pos.add(position, "z", -100, 100).onChange(setPosition)
+      const setRotation = () => el.setAttribute("rotation", `${rotation.x} ${rotation.y} ${rotation.z}`)
+      const rot = gui.addFolder("Rotation")
+      rot.add(rotation, "x", 0, 360).onChange(setRotation)
+      rot.add(rotation, "y", 0, 360).onChange(setRotation)
+      rot.add(rotation, "z", 0, 360).onChange(setRotation)
+    </script>
+  </body>
 </html>

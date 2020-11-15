@@ -74,10 +74,6 @@ AFRAME.registerComponent("warpspeed", {
     this.starG = color[1]
     this.starB = color[2]
     this.stars = []
-    // for (let i = 0; i < this.data.density * 1000; i++) {
-    //   this.stars.push(new Star((Math.random() - 0.5) * 1000, (Math.random() - 0.5) * 1000, 1000 * Math.random()))
-    // }
-    this.lastMoveTS = window.performance.now()
 
     const canvasMap = new THREE.Texture(this.canvas)
     this.material = new THREE.MeshPhongMaterial()
@@ -86,11 +82,19 @@ AFRAME.registerComponent("warpspeed", {
   },
 
   update(oldData) {
+    if (oldData.resolution !== this.data.resolution) {
+      this.canvas.width = this.data.resolution
+      this.canvas.height = this.data.resolution
+    }
     if (oldData.resolution !== this.data.resolution || oldData.starScale !== this.data.starScale) {
       this.size = this.data.resolution / (10 / this.data.starScale)
       this.maxLineWidth = this.size / 30
     }
-    if (oldData.speed !== this.data.speed) {
+    if (
+      oldData.speed !== this.data.speed ||
+      oldData.targetSpeed !== this.data.targetSpeed ||
+      oldData.speedAdjFactor !== this.data.speedAdjFactor
+    ) {
       this.speed = this.data.speed
     }
     if (oldData.density !== this.data.density) {
@@ -105,7 +109,16 @@ AFRAME.registerComponent("warpspeed", {
       }
     }
     if (oldData.starColor !== this.data.starColor) {
-      //
+      const c = this.data.starColor
+      if (c.charAt(0) === "#" && c.length === 7) {
+        this.starR = parseInt(c.substr(1, 2), 16)
+        this.starG = parseInt(c.substr(3, 2), 16)
+        this.starB = parseInt(c.substr(5, 2), 16)
+      } else {
+        this.starR = 255
+        this.starG = 255
+        this.starB = 255
+      }
     }
   },
 
@@ -179,10 +192,7 @@ AFRAME.registerComponent("warpspeed", {
 
   move(timeDelta) {
     const speedMulF = timeDelta / 16.5
-    const speedAdjF = Math.pow(
-      this.data.speedAdjFactor < 0 ? 0 : this.data.speedAdjFactor > 1 ? 1 : this.data.speedAdjFactor,
-      1 / speedMulF
-    )
+    const speedAdjF = Math.pow(this.data.speedAdjFactor, 1 / speedMulF)
 
     this.speed = this.data.targetSpeed * speedAdjF + this.speed * (1 - speedAdjF)
     if (this.speed < 0) this.speed = 0
