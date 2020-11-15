@@ -3,29 +3,65 @@
 <head>
 <meta charset="UTF-8" />
 <title>WarpSpeed.js</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
 <script type="text/javascript" src="warpspeed.js"></script>
   <script>
+
     function togglePause() {
-      const el = document.querySelector("#box")
-      if (el.isPlaying) {
-        el.pause()
-      } else {
-        el.play()
-      }
-      console.log("IS PLAYING", el.isPlaying)
+      // let elm = document.querySelector("#box")
+      // if (elm.isPlaying) {
+      //   elm.pause()
+      // } else {
+      //   elm.play()
+      // }
+      // console.log("IS PLAYING", elm.isPlaying)
     }
+
   </script>
 </head>
 <body onclick="togglePause()">
-  <canvas id="my-canvas" width="512" height="512"></canvas>
   <a-scene vr-mode-ui="enabled: false">
-    <a-assets>
-    </a-assets>
     <a-camera look-controls-enabled="false" wasd-controls-enabled="false"></a-camera>
     <a-entity id="box" geometry="primitive: box; width: 10; height: 10; depth: 10;" position="5 2 -15" rotation="-10 20 0"
       warpspeed>
     </a-entity>
   </a-scene>
+  <script>
+    const el = document.querySelector("#box")
+
+    const settings = {
+      speed: 0.7,
+      targetSpeed: 0.7,
+      speedAdjFactor: 0.03,
+      density: 0.7,
+      useCircles: true,
+      depthAplha: true,
+      warpEffect: true,
+      warpEffectLength: 5,
+      starScale: 3,
+      backgroundColor: "#100a1a",
+      starColor: "#ffffff",
+    }
+
+    const update = () => {
+      const data = Object.entries(settings).map(([key, value]) => `${key}: ${value}`).join("; ")
+      el.setAttribute("warpspeed", data)
+    }
+
+    const gui = new dat.GUI()
+    // gui.add(settings, "speed", 0, 10, 0.1)
+    gui.add(settings, "targetSpeed", 0, 10, 0.1).onChange(update)
+    // gui.add(settings, "speedAdjFactor", 0, 1, 0.01)
+    gui.add(settings, "density", 0.1, 100.0, 0.1).onChange(update)
+    gui.add(settings, "useCircles").onChange(update)
+    gui.add(settings, "depthAplha").onChange(update)
+    gui.add(settings, "warpEffect").onChange(update)
+    gui.add(settings, "warpEffectLength", 0, 100, 1).onChange(update)
+    gui.add(settings, "starScale", 1, 100, 1).onChange(update)
+    gui.addColor(settings, "backgroundColor").onChange(update)
+      // gui.addColor(settings, "starColor").onChange(update)
+
+  </script>
 </body>
 </html>

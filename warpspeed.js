@@ -32,17 +32,14 @@ AFRAME.registerComponent("warpspeed", {
     useCircles: {
       type: "boolean",
       default: true,
-      // default: false,
     },
     depthAplha: {
       type: "boolean",
       default: true,
-      // default: false,
     },
     warpEffect: {
       type: "boolean",
       default: true,
-      // default: false,
     },
     warpEffectLength: {
       type: "number",
@@ -54,7 +51,7 @@ AFRAME.registerComponent("warpspeed", {
     },
     backgroundColor: {
       type: "color",
-      default: "hsl(263,45%,7%)",
+      default: "#100a1a",
     },
     starColor: {
       type: "color",
@@ -62,17 +59,12 @@ AFRAME.registerComponent("warpspeed", {
     },
   },
 
-  prevW: -1,
-  prevH: -1,
-
   init() {
-    this.speed = this.data.speed
-    // new WarpSpeed("my-canvas")
-    const canvas = document.getElementById("my-canvas")
-    // canvas.width = this.data.resolution
-    // canvas.height = this.data.resolution
+    this.canvas = document.createElement("canvas")
+    this.canvas.width = this.data.resolution
+    this.canvas.height = this.data.resolution
 
-    const ctx = canvas.getContext("2d")
+    const ctx = this.canvas.getContext("2d")
     ctx.fillStyle = this.data.backgroundColor
     ctx.fillRect(0, 0, 1, 1)
     ctx.fillStyle = this.data.starColor
@@ -82,50 +74,51 @@ AFRAME.registerComponent("warpspeed", {
     this.starG = color[1]
     this.starB = color[2]
     this.stars = []
-    for (let i = 0; i < this.data.density * 1000; i++) {
-      this.stars.push(new Star((Math.random() - 0.5) * 1000, (Math.random() - 0.5) * 1000, 1000 * Math.random()))
-    }
+    // for (let i = 0; i < this.data.density * 1000; i++) {
+    //   this.stars.push(new Star((Math.random() - 0.5) * 1000, (Math.random() - 0.5) * 1000, 1000 * Math.random()))
+    // }
     this.lastMoveTS = window.performance.now()
-    // this.draw()
 
-    const canvasMap = new THREE.Texture(canvas)
-    this.material = new THREE.MeshPhongMaterial();
+    const canvasMap = new THREE.Texture(this.canvas)
+    this.material = new THREE.MeshPhongMaterial()
     this.material.map = canvasMap
     this.el.getObject3D("mesh").material = this.material
   },
 
-  tick(time, timeDelta) {
-    const TIME = window.performance.now()
-    this.move()
-    const canvas = document.getElementById("my-canvas")
+  update(oldData) {
+    if (oldData.resolution !== this.data.resolution || oldData.starScale !== this.data.starScale) {
+      this.size = this.data.resolution / (10 / this.data.starScale)
+      this.maxLineWidth = this.size / 30
+    }
+    if (oldData.speed !== this.data.speed) {
+      this.speed = this.data.speed
+    }
+    if (oldData.density !== this.data.density) {
+      const len = Math.ceil(this.data.density * 1000)
+      const diff = len - this.stars.length
+      if (diff > 0) {
+        for (let i = 0; i < diff; i++) {
+          this.stars.push(new Star((Math.random() - 0.5) * 1000, (Math.random() - 0.5) * 1000, 1000 * Math.random()))
+        }
+      } else {
+        this.stars.length = len
+      }
+    }
+    if (oldData.starColor !== this.data.starColor) {
+      //
+    }
+  },
 
-    // console.log(this.starR)
-    // console.log({ time, timeDelta })
+  tick(_time, timeDelta) {
+    this.move(timeDelta)
 
-    // if (!this.PAUSED) {
-    // console.log(canvas.width)
-
-    // if (this.prevW != canvas.clientWidth || this.prevH != canvas.clientHeight) {
-    //   canvas.width = (canvas.clientWidth < 10 ? 10 : canvas.clientWidth)
-    //   canvas.height = (canvas.clientHeight < 10 ? 10 : canvas.clientHeight)
-    // }
-
-    this.size =
-      (canvas.height < canvas.width ? canvas.height : canvas.width) /
-      (10 / (this.data.starScale <= 0 ? 0 : this.data.starScale))
-
-
-    if (this.data.warpEffect) this.maxLineWidth = this.size / 30
-    // console.log(this.maxLineWidth)
-
+    const canvas = this.canvas
     const ctx = canvas.getContext("2d")
     ctx.fillStyle = this.data.backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     const rgb = `rgb(${this.starR},${this.starG},${this.starB})`
     const rgba = `rgba(${this.starR},${this.starG},${this.starB},`
-
-    // console.log(this.stars)
 
     for (const s of this.stars) {
       const xOnDisplay = s.x / s.z
@@ -180,26 +173,17 @@ AFRAME.registerComponent("warpspeed", {
         )
       }
     }
-    this.prevW = canvas.clientWidth
-    this.prevH = canvas.clientHeight
-    // }
-    // if (this._drawRequest != -1) this._drawRequest = requestAnimationFrame(this.draw.bind(this))
-    this.lastRenderT = window.performance.now() - TIME
 
     this.material.map.needsUpdate = true
   },
 
-  move() {
-    const t = window.performance.now()
-    const speedMulF = (t - this.lastMoveTS) / (1000 / 60)
-    this.lastMoveTS = t
-
-    // if (this._PAUSED) return
-
+  move(timeDelta) {
+    const speedMulF = timeDelta / 16.5
     const speedAdjF = Math.pow(
       this.data.speedAdjFactor < 0 ? 0 : this.data.speedAdjFactor > 1 ? 1 : this.data.speedAdjFactor,
       1 / speedMulF
     )
+
     this.speed = this.data.targetSpeed * speedAdjF + this.speed * (1 - speedAdjF)
     if (this.speed < 0) this.speed = 0
     const speed = this.speed * speedMulF
