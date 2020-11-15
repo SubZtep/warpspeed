@@ -8,7 +8,14 @@
     <script type="text/javascript" src="warpspeed.js"></script>
   </head>
   <body>
-    <a-scene vr-mode-ui="enabled: false" stats background="color: #8a0303">
+    <canvas id="c" width="512" height="512" style="width: 512px; height: 512px;"></canvas>
+
+    <!-- stats -->
+    <a-scene
+      vr-mode-ui="enabled: false"
+      background="color: #8a0303"
+      embedded
+      style="display: block; width: 100px; height: 100px;">
       <a-camera></a-camera>
       <a-entity
         id="box"

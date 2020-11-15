@@ -1,3 +1,6 @@
+// firefox: about:config gfx.offscreencanvas.enabled
+// chrome: chrome://flags/#new-canvas-2d-api
+
 class Star {
   constructor(x, y, z) {
     this.x = x
@@ -57,22 +60,20 @@ AFRAME.registerComponent("warpspeed", {
       type: "color",
       default: "#ffffff",
     },
+    useWorker: {
+      type: "boolean",
+      default: true
+    }
   },
 
   init() {
-    this.canvas = document.createElement("canvas")
+    // this.canvas = document.createElement("canvas")
+    this.canvas = document.getElementById("c")
     this.canvas.width = this.data.resolution
     this.canvas.height = this.data.resolution
 
-    const ctx = this.canvas.getContext("2d")
-    ctx.fillStyle = this.data.backgroundColor
-    ctx.fillRect(0, 0, 1, 1)
-    ctx.fillStyle = this.data.starColor
-    ctx.fillRect(0, 0, 1, 1)
-    const color = ctx.getImageData(0, 0, 1, 1).data
-    this.starR = color[0]
-    this.starG = color[1]
-    this.starB = color[2]
+
+    // const ctx = this.canvas.getContext("2d")
     this.stars = []
 
     const canvasMap = new THREE.Texture(this.canvas)
@@ -120,9 +121,21 @@ AFRAME.registerComponent("warpspeed", {
         this.starB = 255
       }
     }
+
+    if (oldData.useWorker !== this.data.useWorker) {
+      const offscreen = this.canvas.transferControlToOffscreen()
+      const worker = new Worker("worker.js")
+      worker.postMessage({
+        data: this.data,
+        canvas: offscreen
+      }, [offscreen])
+      // const canvasData = this.canvas.getContext("2d").
+      console.log(offscreen)
+    }
   },
 
   tick(_time, timeDelta) {
+    if (this.data.useWorker) return
     this.move(timeDelta)
 
     const canvas = this.canvas
