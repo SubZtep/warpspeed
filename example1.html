@@ -5,17 +5,13 @@
     <title>WarpSpeed.js</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script type="text/javascript" src="warpspeed.js"></script>
+    <script type="text/javascript" src="awt.min.js"></script>
   </head>
   <body>
-    <canvas id="c" width="512" height="512" style="width: 512px; height: 512px;"></canvas>
-
-    <!-- stats -->
     <a-scene
       vr-mode-ui="enabled: false"
       background="color: #8a0303"
-      embedded
-      style="display: block; width: 100px; height: 100px;">
+      stats>
       <a-camera></a-camera>
       <a-entity
         id="box"
@@ -36,12 +32,13 @@
         speedAdjFactor: 0.03,
         density: 0.7,
         useCircles: true,
-        depthAplha: true,
+        depthAlpha: true,
         warpEffect: true,
         warpEffectLength: 5,
         starScale: 3,
         backgroundColor: "#100a1a",
         starColor: "#ffffff",
+        useWorker: false,
       }
 
       const elset = {
@@ -78,6 +75,7 @@
           el.play()
         }
       })
+      gui.add(settings, "useWorker").onChange(update)
 
       const ws = gui.addFolder("Warpspeed")
       ws.add(settings, "resolution", [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]).onChange(update)
@@ -86,7 +84,7 @@
       // ws.add(settings, "speedAdjFactor", 0, 1, 0.01)
       ws.add(settings, "density", 0.1, 100.0, 0.1).onChange(update)
       ws.add(settings, "useCircles").onChange(update)
-      ws.add(settings, "depthAplha").onChange(update)
+      ws.add(settings, "depthAlpha").onChange(update)
       ws.add(settings, "warpEffect").onChange(update)
       ws.add(settings, "warpEffectLength", 0, 100, 1).onChange(update)
       ws.add(settings, "starScale", 1, 100, 1).onChange(update)
