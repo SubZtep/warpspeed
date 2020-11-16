@@ -2,16 +2,13 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>WarpSpeed.js</title>
+    <title>WarpSpeed</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script type="text/javascript" src="awt.min.js"></script>
   </head>
   <body>
-    <a-scene
-      vr-mode-ui="enabled: false"
-      background="color: #8a0303"
-      stats>
+    <a-scene vr-mode-ui="enabled: false" background="color: #8a0303" stats>
       <a-camera></a-camera>
       <a-entity
         id="box"
@@ -45,7 +42,7 @@
         primitive: "box",
         width: 10,
         height: 10,
-        depth: 10
+        depth: 10,
       }
 
       const position = {
@@ -55,7 +52,7 @@
       }
 
       const rotation = {
-        x: -10,
+        x: 86,
         y: 20,
         z: 0,
       }
@@ -90,7 +87,7 @@
       ws.add(settings, "starScale", 1, 100, 1).onChange(update)
       ws.addColor(settings, "backgroundColor").onChange(update)
       ws.addColor(settings, "starColor").onChange(update)
-
+      ws.open()
 
       const setGeometry = () => el.setAttribute("geometry", parseAttr(elset))
       const els = gui.addFolder("Entity")
@@ -99,14 +96,14 @@
       els.add(elset, "height", 0.1, 10.0, 0.1).onChange(setGeometry)
       els.add(elset, "depth", 0.1, 10.0, 0.1).onChange(setGeometry)
 
-
       const setPosition = () => el.setAttribute("position", `${position.x} ${position.y} ${position.z}`)
-      const pos = gui.addFolder("Position")
+      const pos = els.addFolder("Position")
       pos.add(position, "x", -100, 100).onChange(setPosition)
       pos.add(position, "y", -100, 100).onChange(setPosition)
       pos.add(position, "z", -100, 100).onChange(setPosition)
+
       const setRotation = () => el.setAttribute("rotation", `${rotation.x} ${rotation.y} ${rotation.z}`)
-      const rot = gui.addFolder("Rotation")
+      const rot = els.addFolder("Rotation")
       rot.add(rotation, "x", 0, 360).onChange(setRotation)
       rot.add(rotation, "y", 0, 360).onChange(setRotation)
       rot.add(rotation, "z", 0, 360).onChange(setRotation)

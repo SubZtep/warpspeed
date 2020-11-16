@@ -1,23 +1,29 @@
 import WarpSpeed from "./warpspeed"
 
 let warpspeed
-let lastTime = null
+let lastTime
+let paused
 
 const tick = time => {
+  if (paused) return
   warpspeed.draw(lastTime === null ? 1 : time - lastTime)
   lastTime = time
   requestAnimationFrame(tick)
 }
 
-onmessage = ({ data: { canvas, config } }) => {
+onmessage = ({ data: { canvas, config, pause } }) => {
   if (canvas !== undefined) {
-    lastTime = null
     warpspeed = new WarpSpeed(canvas)
   }
 
   if (config !== undefined) {
     warpspeed.update(config)
-    if (lastTime === null) {
+  }
+
+  if (pause !== undefined) {
+    paused = pause
+    if (!paused) {
+      lastTime = null
       requestAnimationFrame(tick)
     }
   }

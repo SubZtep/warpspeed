@@ -53,14 +53,12 @@ AFRAME.registerComponent("warpspeed", {
     },
     useWorker: {
       type: "boolean",
-      default: false
-    }
+      default: false,
+    },
   },
 
   update(oldData) {
-
     if (oldData.useWorker !== this.data.useWorker) {
-
       if (oldData.useWorker !== undefined) {
         if (oldData.useWorker) {
           this.worker.terminate()
@@ -89,9 +87,21 @@ AFRAME.registerComponent("warpspeed", {
     }
 
     if (this.data.useWorker) {
-      this.worker.postMessage({ config: this.data })
+      this.worker.postMessage({ config: this.data, pause: !this.isPlaying })
     } else {
       this.warpspeed.update(this.data)
+    }
+  },
+
+  play() {
+    if (this.data.useWorker) {
+      this.worker.postMessage({ pause: false })
+    }
+  },
+
+  pause() {
+    if (this.data.useWorker) {
+      this.worker.postMessage({ pause: true })
     }
   },
 
@@ -99,11 +109,6 @@ AFRAME.registerComponent("warpspeed", {
     if (!this.data.useWorker) {
       this.warpspeed.draw(timeDelta)
     }
-    // this.material.map.needsUpdate = true
     this.canvasMap.needsUpdate = true
   },
-
-  pause() {
-    console.log("PAUSE")
-  }
 })
