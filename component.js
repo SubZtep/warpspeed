@@ -11,14 +11,6 @@ AFRAME.registerComponent("warpspeed", {
       type: "number",
       default: 0.7,
     },
-    targetSpeed: {
-      type: "number",
-      default: 0.7, // value of data.speed
-    },
-    speedAdjFactor: {
-      type: "number",
-      default: 0.03, // min: 0, max: 1
-    },
     density: {
       type: "number",
       default: 0.7, // min: >0

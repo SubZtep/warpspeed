@@ -36,11 +36,6 @@ export default class WarpSpeed {
     for (const [key, value] of Object.entries(config)) {
       if (this.config[key] !== value) {
         switch (key) {
-          case "speed":
-          case "targetSpeed":
-          case "speedAdjFactor":
-            this.speed = config.speed || this.config.speed
-            break
           case "resolution":
             if (config.starScale || this.config.starScale) {
               this.size = value / (10 / (config.starScale || this.config.starScale))
@@ -78,7 +73,6 @@ export default class WarpSpeed {
   }
 
   draw(timeDelta) {
-    // console.log(timeDelta)
     this.move(timeDelta)
 
     const width = this.config.resolution
@@ -89,18 +83,18 @@ export default class WarpSpeed {
     ctx.fillStyle = this.config.backgroundColor
     ctx.fillRect(0, 0, width, height)
 
-    for (const s of this.stars) {
-      const xOnDisplay = s.x / s.z
-      const yOnDisplay = s.y / s.z
+    for (const star of this.stars) {
+      const xOnDisplay = star.x / star.z
+      const yOnDisplay = star.y / star.z
 
       if (!this.config.warpEffect && (xOnDisplay < -0.5 || xOnDisplay > 0.5 || yOnDisplay < -0.5 || yOnDisplay > 0.5))
         continue
 
-      const size = (s.size * this.size) / s.z
+      const size = (star.size * this.size) / star.z
       if (size < 0.3) continue //don't draw very small dots
 
       if (this.config.depthAlpha) {
-        const alpha = (1000 - s.z) / 1000
+        const alpha = (1000 - star.z) / 1000
         ctx.fillStyle = `rgba(${this.starR}, ${this.starG}, ${this.starB}, ${alpha.toString()})`
       } else {
         ctx.fillStyle = this.config.starColor
@@ -108,8 +102,8 @@ export default class WarpSpeed {
 
       if (this.config.warpEffect) {
         ctx.beginPath()
-        const x2OnDisplay = s.x / (s.z + this.config.warpEffectLength * this.speed)
-        const y2OnDisplay = s.y / (s.z + this.config.warpEffectLength * this.speed)
+        const x2OnDisplay = star.x / (star.z + this.config.warpEffectLength * this.config.speed)
+        const y2OnDisplay = star.y / (star.z + this.config.warpEffectLength * this.config.speed)
 
         if (x2OnDisplay < -0.5 || x2OnDisplay > 0.5 || y2OnDisplay < -0.5 || y2OnDisplay > 0.5) continue
 
@@ -130,11 +124,8 @@ export default class WarpSpeed {
   }
 
   move(timeDelta) {
-    const speedMulF = timeDelta / 10 // / 16.5
-    const speedAdjF = Math.pow(this.config.speedAdjFactor, 1 / speedMulF)
-    this.speed = this.config.targetSpeed * speedAdjF + this.speed * (1 - speedAdjF)
-    if (this.speed < 0) this.speed = 0
-    const speed = this.speed * speedMulF
+    console.log(this.config.speed)
+    const speed = this.config.speed * (timeDelta / 10)
 
     for (const star of this.stars) {
       star.z -= speed
