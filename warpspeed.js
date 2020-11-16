@@ -26,10 +26,6 @@ export default class WarpSpeed {
   config = {}
   stars = []
 
-  starR = 255
-  starG = 255
-  starB = 255
-
   constructor(canvas) {
     this.canvas = canvas
     this.ctx = this.canvas.getContext("2d")
