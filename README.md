@@ -18,12 +18,12 @@ The animation is from the existing [WarpSpeed.js](https://github.com/adolfintel/
 
 ## ~~Usage~~
 
-WIP, check example :trollface:
+> WIP, check [example](https://subztep.github.io/aframe-warpspeed-texture/) :trollface:
 
 ---
 
 > > ## License
 > :octocat:
-> > Unlicensed, the _original texture version_ required [lgpl3+](https://github.com/adolfintel/warpspeed#license) which is not in GitHub templates.
+> > Unlicensed, the _original texture version_ requires [lgpl3+](https://github.com/adolfintel/warpspeed#license) which is not in GitHub templates.
 
 ---
