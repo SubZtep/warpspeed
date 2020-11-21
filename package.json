@@ -13,6 +13,7 @@
   "keywords": [
     "aframe",
     "texture",
+    "webworker",
     "warpspeed"
   ],
   "author": "Andras Serfozo <subztep@gmail.com>",
@@ -22,7 +23,7 @@
   },
   "homepage": "https://github.com/SubZtep/aframe-warpspeed-texture#readme",
   "devDependencies": {
-    "rollup": "^2.33.2",
+    "rollup": "^2.33.3",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-web-worker-loader": "^1.4.0"
   }

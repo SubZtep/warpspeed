@@ -1,14 +1,4 @@
-class Star {
-  constructor(x, y, z) {
-    this.x = x
-    this.y = y
-    this.z = z
-    this.size = 0.5 + Math.random()
-  }
-}
-
 const randPos = () => (Math.random() - 0.5) * 1000
-
 const hex2rgb = webColor =>
   webColor.charAt(0) === "#" && webColor.length === 7
     ? {
@@ -21,6 +11,15 @@ const hex2rgb = webColor =>
         g: 255,
         b: 255,
       }
+
+class Star {
+  constructor(x, y, z) {
+    this.x = x
+    this.y = y
+    this.z = z
+    this.size = 0.5 + Math.random()
+  }
+}
 
 export default class WarpSpeed {
   config = {}
@@ -124,7 +123,6 @@ export default class WarpSpeed {
   }
 
   move(timeDelta) {
-    console.log(this.config.speed)
     const speed = this.config.speed * (timeDelta / 10)
 
     for (const star of this.stars) {
