@@ -26,26 +26,19 @@ export default class WarpSpeed {
   stars = []
 
   constructor(canvas) {
-    this.canvas = canvas
-    this.ctx = this.canvas.getContext("2d")
+    this.ctx = canvas.getContext("2d")
   }
 
   update(config) {
     //LiliCode: n vvvvvvvvvvvvvvvvvvj n n n n
+    let resolutionUpdated = false
     for (const [key, value] of Object.entries(config)) {
       if (this.config[key] !== value) {
         switch (key) {
-          case "resolution":
-            if (config.starScale || this.config.starScale) {
-              this.size = value / (10 / (config.starScale || this.config.starScale))
-              this.maxLineWidth = this.size / 30
-            }
-            break
+          case "width":
+          case "height":
           case "starScale":
-            if (config.resolution || this.config.resolution) {
-              this.size = (config.resolution || this.config.resolution) / (10 / value)
-              this.maxLineWidth = this.size / 30
-            }
+            resolutionUpdated = true
             break
           case "density":
             const starCount = Math.ceil(value * 1000)
@@ -69,13 +62,18 @@ export default class WarpSpeed {
         this.config[key] = value
       }
     }
+
+    if (resolutionUpdated) {
+      this.size = Math.max(this.config.width, this.config.height) / (10 / this.config.starScale)
+      this.maxLineWidth = this.size / 30
+    }
   }
 
   draw(timeDelta) {
     this.move(timeDelta)
 
-    const width = this.config.resolution
-    const height = this.config.resolution
+    const width = this.config.width
+    const height = this.config.height
     this.size = Math.max(width, height) / (10 / this.config.starScale)
 
     const ctx = this.ctx

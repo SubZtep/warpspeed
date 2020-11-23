@@ -3,7 +3,11 @@ import WarpWorker from "web-worker:./worker"
 
 AFRAME.registerComponent("warpspeed", {
   schema: {
-    resolution: {
+    width: {
+      type: "number",
+      default: 512,
+    },
+    height: {
       type: "number",
       default: 512,
     },
@@ -13,7 +17,8 @@ AFRAME.registerComponent("warpspeed", {
     },
     density: {
       type: "number",
-      default: 0.7, // min: >0
+      // default: 0.7, // min: >0
+      default: 25.7, // min: >0
     },
     useCircles: {
       type: "boolean",
@@ -50,7 +55,11 @@ AFRAME.registerComponent("warpspeed", {
   },
 
   update(oldData) {
-    if (oldData.useWorker !== this.data.useWorker) {
+    if (
+      oldData.useWorker !== this.data.useWorker ||
+      oldData.width !== this.data.width ||
+      oldData.height !== this.data.height
+    ) {
       if (oldData.useWorker !== undefined) {
         if (oldData.useWorker) {
           this.worker.terminate()
@@ -63,8 +72,8 @@ AFRAME.registerComponent("warpspeed", {
       }
 
       this.canvas = document.createElement("canvas")
-      this.canvas.width = this.data.resolution
-      this.canvas.height = this.data.resolution
+      this.canvas.width = this.data.width
+      this.canvas.height = this.data.height
 
       this.canvasMap = new THREE.Texture(this.canvas)
       this.el.getObject3D("mesh").material.map = this.canvasMap
