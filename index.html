@@ -23,6 +23,7 @@
           .join("; ")
 
       const gui = new dat.GUI()
+      let wc
 
       const warpspeed = {
         width: 512,
@@ -38,11 +39,18 @@
         starColor: "#ffffff",
         useWorker: false,
       }
-      const setWarpseed = () => el.setAttribute("warpspeed", parseAttr(warpspeed))
+
+      const setWarpseed = () => {
+        el.setAttribute("warpspeed", parseAttr(warpspeed))
+        if (warpspeed.useWorker && !el.is("worker")) {
+          wc.setValue(false)
+          alert("Unable to transfer canvas control to worker thread!\n\nPlease, see the console for details.\n\nヾ( ￣O￣)ツ")
+        }
+      }
 
       gui.addColor({ background: "#000000" }, "background").onChange(color => sceneEl.setAttribute("background", `color: ${color}`))
       gui.add({ pause: false }, "pause").onChange(isPause => el[isPause ? "pause" : "play"]())
-      gui.add(warpspeed, "useWorker").onChange(setWarpseed)
+      wc = gui.add(warpspeed, "useWorker").onChange(setWarpseed)
 
       const ws = gui.addFolder("WarpSpeed")
       const resolutions = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]

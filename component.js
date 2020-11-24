@@ -55,59 +55,79 @@ AFRAME.registerComponent("warpspeed", {
   },
 
   update(oldData) {
-    if (
+    const reloadTexture =
       oldData.useWorker !== this.data.useWorker ||
       oldData.width !== this.data.width ||
       oldData.height !== this.data.height
-    ) {
+
+    if (reloadTexture) {
       if (oldData.useWorker !== undefined) {
-        if (oldData.useWorker) {
-          this.worker.terminate()
-          delete this.worker
-        } else {
-          delete this.warpspeed
-        }
-        this.canvasMap.dispose()
-        delete this.canvas
+        this.destroyCanvasMap()
       }
-
-      this.canvas = document.createElement("canvas")
-      this.canvas.width = this.data.width
-      this.canvas.height = this.data.height
-
-      this.canvasMap = new THREE.Texture(this.canvas)
-      this.el.getObject3D("mesh").material.map = this.canvasMap
-
-      if (this.data.useWorker) {
-        const offscreen = this.canvas.transferControlToOffscreen()
-        this.worker = new WarpWorker()
-        this.worker.postMessage({ canvas: offscreen }, [offscreen])
-      } else {
-        this.warpspeed = new WarpSpeed(this.canvas)
-      }
+      this.createCanvasMap()
+      this.initWarpspeed()
     }
 
-    if (this.data.useWorker) {
+    if (this.workerInUse()) {
       this.worker.postMessage({ config: this.data, pause: !this.isPlaying })
     } else {
       this.warpspeed.update(this.data)
     }
   },
 
-  play() {
+  initWarpspeed() {
+    this.el.removeState("worker")
     if (this.data.useWorker) {
+      try {
+        const offscreen = this.canvas.transferControlToOffscreen()
+        this.worker = new WarpWorker()
+        this.worker.postMessage({ canvas: offscreen }, [offscreen])
+        this.el.addState("worker")
+        return
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    this.warpspeed = new WarpSpeed(this.canvas)
+  },
+
+  createCanvasMap() {
+    this.canvas = document.createElement("canvas")
+    this.canvas.width = this.data.width
+    this.canvas.height = this.data.height
+    this.canvasMap = new THREE.Texture(this.canvas)
+    this.el.getObject3D("mesh").material.map = this.canvasMap
+  },
+
+  destroyCanvasMap() {
+    if (this.workerInUse()) {
+      this.worker.terminate()
+      delete this.worker
+    } else {
+      delete this.warpspeed
+    }
+    this.canvasMap.dispose()
+    delete this.canvas
+  },
+
+  play() {
+    if (this.workerInUse()) {
       this.worker.postMessage({ pause: false })
     }
   },
 
   pause() {
-    if (this.data.useWorker) {
+    if (this.workerInUse()) {
       this.worker.postMessage({ pause: true })
     }
   },
 
+  workerInUse() {
+    return this.el.is("worker")
+  },
+
   tick(_time, timeDelta) {
-    if (!this.data.useWorker) {
+    if (!this.workerInUse()) {
       this.warpspeed.draw(timeDelta)
     }
     this.canvasMap.needsUpdate = true
