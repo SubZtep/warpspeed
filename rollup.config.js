@@ -4,8 +4,8 @@ import webWorkerLoader from "rollup-plugin-web-worker-loader"
 export default {
   input: "component.js",
   plugins: [
-    terser(),
-    webWorkerLoader({ targetPlatform: "browser" })
+    // terser(),
+    webWorkerLoader({ targetPlatform: "browser" }),
   ],
   output: {
     file: "awt.min.js",

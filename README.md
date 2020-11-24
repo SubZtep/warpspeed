@@ -1,6 +1,6 @@
 # A-Frame WarpSpeed Texture
 
-Component that set real-time calculated animation on a canvas as texture to the existing material of an entity. The main purpose is testing the (currently) experimental [transferControlToOffscreen](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/transferControlToOffscreen) method.
+Component that set real-time calculated animation on a canvas as texture to the existing material of an entity. The main purpose is testing the experimental [`transferControlToOffscreen()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/transferControlToOffscreen) method.
 
 The animation is an updated version of the existing [WarpSpeed.js](https://github.com/adolfintel/warpspeed) library. There are two was two run the calculation:
 
@@ -19,11 +19,11 @@ Simple usage is simple, [download](https://raw.githubusercontent.com/SubZtep/afr
 <a-box warpspeed></a-box>
 ```
 
-For more detailed usage check the [example source](index.html) and its [**LIVE demonstration** page](https://subztep.github.io/aframe-warpspeed-texture/) with GUI for properties.
+For more detailed usage check the [example source](index.html) and its animated [**LIVE demonstration** page](https://subztep.github.io/aframe-warpspeed-texture/) with dynamic **dat.GUI** property settings.
 
 ### API
 
-Speed change removed from the original script because of A-Frame's animation capability.
+Speed change removed from the original script because of **A-Frame**'s animation capability.
 
 | Property         | Description                                                          | Default Value |
 | ---------------- | -------------------------------------------------------------------- | ------------- |
@@ -41,6 +41,14 @@ Speed change removed from the original script because of A-Frame's animation cap
 | useWorker        | Run calculations in a web worker.                                    | false         |
 
 If the browser is not capable of running the requirements for web worker calculation `useWorker` automatically set to _false_.
+
+## Browser Support
+
+Without web worker all A-Frame compatible browser should work, even it's not recommended for performance reasons.
+
+At the moment only **Chrome** managed to run it after enabled [experimental canvas 2D API features](chrome://flags/#new-canvas-2d-api) flag.
+
+~~Firefox~~ failed even [`gfx.offscreencanvas.enabled`](about:config) is _true_.
 
 ## License
 
