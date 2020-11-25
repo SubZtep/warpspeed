@@ -19,7 +19,7 @@ Simple usage is simple, [download](https://raw.githubusercontent.com/SubZtep/afr
 <a-box warpspeed></a-box>
 ```
 
-For more detailed usage check the [example source](index.html) and its [**LIVE demonstration** page](https://subztep.github.io/aframe-warpspeed-texture/) with GUI for properties.
+For more detailed usage check the [demo branch](https://github.com/SubZtep/aframe-warpspeed-texture/tree/demo) and its [**LIVE demonstration** page](https://subztep.github.io/aframe-warpspeed-texture/) with GUI for the properties.
 
 ### API
 

@@ -1,16 +1,6 @@
+import { toRGB } from "./colorft"
+
 const randPos = () => (Math.random() - 0.5) * 1000
-const hex2rgb = webColor =>
-  webColor.charAt(0) === "#" && webColor.length === 7
-    ? {
-        r: parseInt(webColor.substr(1, 2), 16),
-        g: parseInt(webColor.substr(3, 2), 16),
-        b: parseInt(webColor.substr(5, 2), 16),
-      }
-    : {
-        r: 255,
-        g: 255,
-        b: 255,
-      }
 
 class Star {
   constructor(x, y, z) {
@@ -53,7 +43,7 @@ export default class WarpSpeed {
             }
             break
           case "starColor":
-            const color = hex2rgb(value)
+            const color = toRGB(value)
             this.starR = color.r
             this.starG = color.g
             this.starB = color.b
