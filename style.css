@@ -1,0 +1,61 @@
+/**
+** Show FPS only on stats panel
+**/
+.miniStat .rs-container h1:not(:first-of-type),
+.miniStat .rs-container .rs-group:not(:first-of-type),
+.miniStat .rs-container .rs-counter-base:first-of-type {
+  display: none;
+}
+
+/**
+** Error message
+**/
+.error {
+  position: absolute;
+  top: 25%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 1.1rem "Arial Black", Gadget, sans-serif;
+  color: #fff;
+  background-color: rgba(138, 3, 3, 0.6);
+  text-shadow: 1px 1px 2px #000;
+  line-height: 0.5rem;
+  border: 1px solid #000;
+}
+.error p:first-of-type {
+  color: #ffff00;
+  font-size: 1.2rem;
+}
+.hidden {
+  display: none;
+}
+
+/**
+** GitHub corner
+**/
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out;
+}
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20%,
+  60% {
+    transform: rotate(-25deg);
+  }
+  40%,
+  80% {
+    transform: rotate(10deg);
+  }
+}
+@media (max-width: 500px) {
+  .github-corner:hover .octo-arm {
+    animation: none;
+  }
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+  }
+}
