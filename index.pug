@@ -10,10 +10,10 @@ html(lang="en")
       type="text/javascript"
       src="https://unpkg.com/aframe-animation-timeline-component@2.0.0/dist/aframe-animation-timeline-component.min.js"
     )
-    script(type="text/javascript" src="https://raw.githubusercontent.com/SubZtep/aframe-warpspeed-texture/main/awt.min.js")
-    //bundle
+    script(type="text/javascript" src="awt.min.js")
     link(rel="stylesheet" type="text/css" href="style.css")
   body.miniStat
+    //bundle
     a-scene(
       vr-mode-ui="enabled: false"
       background="color: #000000"
@@ -43,8 +43,7 @@ html(lang="en")
 
       a-camera(
         position="0 0 2"
-        look-controls="enabled: false"
-        wasd-controls="enabled: false")
+        look-controls="hmdEnabled: false")
 
       a-entity#box(
         mixin="star"

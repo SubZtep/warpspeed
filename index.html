@@ -7,11 +7,11 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script type="text/javascript" src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/aframe-animation-timeline-component@2.0.0/dist/aframe-animation-timeline-component.min.js"></script>
-    <script type="text/javascript" src="https://raw.githubusercontent.com/SubZtep/aframe-warpspeed-texture/main/awt.min.js"></script>
-    <script src="./demo.js"></script>
+    <script type="text/javascript" src="awt.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body class="miniStat">
+    <script src="./demo.js"></script>
     <a-scene vr-mode-ui="enabled: false" background="color: #000000" animation-timeline="timeline: #intro" stats>
       <a-assets>
         <a-timeline id="intro">
@@ -30,7 +30,7 @@
           <a-mixin id="star" animation__widescreenw="property: geometry.width; from: 0.1; to: 3; dur: 3000; easing: linear; autoplay: false" animation__widescreenh="property: geometry.height; from: 0.2; to: 1; dur: 2000; easing: easeInOutCirc; autoplay: false" animation__bgspacer="property: warpspeed.backgroundColor; from: #000000; to: #100a1a; dur: 3000; type: color; easing: linear; autoplay: false" animation__speedup="property: warpspeed.speed; from: 0; to: 10; dur: 2000; easing: linear; autoplay: false" animation__redder="property: warpspeed.starColor; from: #ffffff; to: #ff0000; dur: 2000; type: color; easing: linear; autoplay: false"></a-mixin>
         </a-timeline>
       </a-assets>
-      <a-camera position="0 0 2" look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 2" look-controls="hmdEnabled: false"></a-camera>
       <a-entity id="box" mixin="star" position="0 0 0" geometry="primitive: box; width: 3; height: 1; depth: 1" warpspeed></a-entity>
     </a-scene><a class="github-corner" href="https://github.com/SubZtep/aframe-warpspeed-texture">
       <svg width="80" height="80" viewBox="0 0 250 250" style="fill: #111; color: #EFEFEF; position: fixed; bottom: 0; border: 0; left: 0; transform: rotate(180deg); opacity: 0.8">
