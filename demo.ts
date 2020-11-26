@@ -1,3 +1,8 @@
+const boxEl = document.querySelector("#box")
+
+// console.log(boxEl.getObject3D("mesh").geometry)
+console.log(boxEl!.getAttribute("position"))
+
 // const sceneEl = document.querySelector("a-scene")
 // const cameraEl = document.querySelector("a-camera")
 // const boxEl = document.querySelector("#box")
