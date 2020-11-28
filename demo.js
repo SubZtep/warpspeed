@@ -48,7 +48,7 @@ f.add({
   Stat_FPS_Only: true
 }, "Stat_FPS_Only").onChange(fpsOnly => document.body.className = fpsOnly ? "miniStat" : "");
 f.addColor({
-  background: "#000000"
+  background: "#8a0303"
 }, "background").onChange(color => sceneEl.setAttribute("background", {
   color
 })); // f.open()
