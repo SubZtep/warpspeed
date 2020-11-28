@@ -11,15 +11,13 @@ html(lang="en")
     link(rel="stylesheet" type="text/css" href="style.css")
   body.miniStat
     a-scene(
-      renderer="alpha: false;"
+      renderer="alpha: false; antialias: false"
       vr-mode-ui="enabled: false"
       background="color: #8a0303"
-      animation-timeline="timeline: #intro; loop: false"
+      animation-timeline="timeline: #intro"
       stats)
-
       a-assets
         a-timeline#intro
-
           a-timeline-group
             a-timeline-animation(select="#box" name="widescreenw" offset="500")
             a-timeline-animation(select="#box" name="widescreenh" offset="1000")
@@ -39,6 +37,7 @@ html(lang="en")
             a-timeline-animation(select="#box" name="rotall")
             a-timeline-animation(select="#box" name="ow")
             a-timeline-animation(select="#box" name="oh")
+            a-timeline-animation(select="#box" name="od")
 
           a-mixin#star(
             animation__widescreenw="property: geometry.width; from: 0.1; to: 3; dur: 1000; easing: easeInOutCirc; autoplay: false"
@@ -51,7 +50,7 @@ html(lang="en")
             animation__rotall="property: rotation; from: 0 -180 -180; to: 0 0 0; dur: 1000; easing: easeOutSine; autoplay: false"
             animation__ow="property: geometry.width; to: 1; dur: 1000; autoplay: false"
             animation__oh="property: geometry.height; to: 1; dur: 1000; autoplay: false"
-          )
+            animation__od="property: geometry.depth; from: 0.5; to: 1; dur: 1000; autoplay: false")
 
       a-camera(position="0 0 2")
 
@@ -59,12 +58,12 @@ html(lang="en")
         mixin="star"
         position="0 0 0"
         rotation="-360 -180 -180"
-        geometry="primitive: box; width: 0.1; height: 0.1; depth: 1")
+        geometry="primitive: box; width: 0.1; height: 0.1; depth: 0.5")
 
     .error.hidden
       p ⚠ Unable to transfer Canvas Control to a Worker thread! ⚠
       tt Please, see the web console and component readme for details.
       p ヾ( ￣O￣)ツ
-    //- include github.pug
 
+    include github.pug
     //bundle

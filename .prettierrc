@@ -4,5 +4,5 @@
   "arrowParens": "avoid",
   "pugEmptyAttributes": "none",
   "pugAttributeSeparator": "none",
-  "pugClosingBracketPosition": "new-line"
+  "pugClosingBracketPosition": "last-line"
 }
