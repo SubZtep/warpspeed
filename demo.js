@@ -59,29 +59,41 @@ Object.keys(warpspeed).forEach(prop => {
   changeProp = changeComp(prop);
 
   if (prop.toLowerCase().indexOf("color") === -1) {
-    const ctrl = f.add(boxEl.components.warpspeed.data, prop).onChange(changeProp).listen();
+    let ctrl;
 
     switch (prop) {
-      case "speed":
-        ctrl.step(0.01);
-        break;
-
       case "width":
       case "height":
-        ctrl.options([2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]);
+        ctrl = f.add(boxEl.components.warpspeed.data, prop, [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]);
+        break;
+
+      case "speed":
+      case "warpEffectLength":
+        ctrl = f.add(boxEl.components.warpspeed.data, prop, 0, 50, 0.01);
+        break;
+
+      case "density":
+      case "starScale":
+        ctrl = f.add(boxEl.components.warpspeed.data, prop, 0.01, 50, 0.01);
         break;
 
       case "useWorker":
+        ctrl = f.add(boxEl.components.warpspeed.data, prop);
         ctrl.onFinishChange(testWorker);
         break;
+
+      default:
+        ctrl = f.add(boxEl.components.warpspeed.data, prop);
     }
+
+    ctrl.onChange(changeProp).listen();
   } else {
     f.addColor(boxEl.components.warpspeed.data, prop).onChange(changeProp).listen();
   }
 });
 f.open();
 f = gui.addFolder("Position");
-Array.of("x", "y", "z").forEach(prop => void f.add(boxEl.object3D.position, prop).step(0.01).listen()); // f.open()
+Array.of("x", "y", "z").forEach(prop => void f.add(boxEl.object3D.position, prop).min(-10).max(10).step(0.01).listen()); // f.open()
 
 f = gui.addFolder("Rotation");
 Array.of("x", "y", "z").forEach(prop => void f.add(boxEl.object3D.rotation, prop).min(-2 * Math.PI).max(2 * Math.PI).step(0.01).listen());
@@ -90,7 +102,7 @@ f = gui.addFolder("Dimensions");
 changeComp = changeData("geometry");
 Array.of("width", "height", "depth").forEach(prop => {
   changeProp = changeComp(prop);
-  f.add(boxEl.getAttribute("geometry"), prop).min(0.01).step(0.01).onChange(changeProp).listen();
+  f.add(boxEl.getAttribute("geometry"), prop).min(0.01).max(10).step(0.01).onChange(changeProp).listen();
 });
 f.open();
 
