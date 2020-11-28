@@ -4,11 +4,11 @@ import WarpWorker from "web-worker:./worker"
 AFRAME.registerComponent("warpspeed", {
   schema: {
     width: {
-      type: "number",
+      type: "int",
       default: 512,
     },
     height: {
-      type: "number",
+      type: "int",
       default: 512,
     },
     speed: {
