@@ -1,4 +1,6 @@
-// const sceneEl = document.querySelector("a-scene")
+const boxEl = document.querySelector("#box"); // console.log(boxEl.getObject3D("mesh").geometry)
+
+console.log(boxEl.getAttribute("position")); // const sceneEl = document.querySelector("a-scene")
 // const cameraEl = document.querySelector("a-camera")
 // const boxEl = document.querySelector("#box")
 // let geometryFolder = null
@@ -78,6 +80,7 @@
 //   }
 // }
 // const setRotation = () => boxEl.setAttribute("rotation", `${rotation.x} ${rotation.y} ${rotation.z}`)
+
 const setStats = fpsOnly => document.body.className = fpsOnly ? "miniStat" : "";
 
 const gui = new dat.GUI(); // // gui.close()

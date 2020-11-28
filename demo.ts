@@ -1,159 +1,129 @@
+const sceneEl = document.querySelector("a-scene")
+const cameraEl = document.querySelector("a-camera")
 const boxEl = document.querySelector("#box")
+const errorEl = document.querySelector(".error")
 
-// console.log(boxEl.getObject3D("mesh").geometry)
-console.log(boxEl!.getAttribute("position"))
+const changeData = (comp: string) => (prop: string) => (val: any) => void boxEl.setAttribute(comp, { [prop]: val })
 
-// const sceneEl = document.querySelector("a-scene")
-// const cameraEl = document.querySelector("a-camera")
-// const boxEl = document.querySelector("#box")
+let timeout: NodeJS.Timeout
+const showError = () => {
+  errorEl.classList.remove("hidden")
+  clearTimeout(timeout)
+  timeout = setTimeout(() => errorEl.classList.add("hidden"), 3000)
+}
 
-// let geometryFolder = null
-// const geometryController = {}
-// let workerController
+const testWorker = (uw: boolean) => {
+  if (uw && !boxEl.is("worker")) {
+    boxEl.setAttribute("warpspeed", { useWorker: false })
+    showError()
+  }
+}
 
-// const resolutions = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
+const warpspeed = {
+  width: 1024,
+  height: 256,
+  speed: 1,
+  density: 5,
+  useCircles: true,
+  depthAlpha: true,
+  warpEffect: true,
+  warpEffectLength: 5,
+  starScale: 3,
+  backgroundColor: "#100a1a",
+  starColor: "#ffffff",
+  useWorker: true,
+}
+boxEl.setAttribute("warpspeed", warpspeed)
 
-// const warpspeed = {
-//   width: 1024,
-//   height: 256,
-//   speed: 0,
-//   density: 5,
-//   useCircles: true,
-//   depthAlpha: true,
-//   warpEffect: true,
-//   warpEffectLength: 5,
-//   starScale: 3,
-//   // backgroundColor: "#100a1a",
-//   backgroundColor: "#ff0000",
-//   starColor: "#ffffff",
-//   useWorker: false,
-// }
-
-// const geometry = {
-//   primitive: "box",
-//   box: {
-//     // width: 0.1,
-//     // height: 0.2,
-//     width: 1,
-//     height: 1,
-//     depth: 1,
-//   },
-//   plane: {
-//     width: 1,
-//     height: 1,
-//   },
-//   sphere: {
-//     radius: 1,
-//   },
-//   cone: {
-//     height: 1,
-//     radiusTop: 0.8,
-//     radiusBottom: 1,
-//   },
-//   ring: {
-//     radiusInner: 0.8,
-//     radiusOuter: 1.2,
-//   },
-// }
-
-// const rotation = {
-//   x: 0,
-//   y: 0,
-//   z: 0,
-// }
-
-// const obj2attr = obj =>
-//   Object.entries(obj)
-//     .map(([key, value]) => `${key}: ${value}`)
-//     .join(";")
-
-// const setGeometry = () =>
-//   boxEl.setAttribute("geometry", `primitive: ${geometry.primitive};` + obj2attr(geometry[geometry.primitive]))
-
-// const changePrimitive = primitive => {
-//   if (geometryFolder !== null) {
-//     entityFolder.removeFolder(geometryFolder)
-//   }
-//   Object.keys(geometryController).forEach(key => delete geometryController[key])
-//   geometry.primitive = primitive
-//   geometryFolder = entityFolder.addFolder("Geometry")
-//   geometryFolder.open()
-//   for (let key in geometry[primitive]) {
-//     geometryController[key] = geometryFolder.add(geometry[primitive], key, 0.1, 10.0, 0.1).onChange(setGeometry)
-//   }
-//   setGeometry()
-// }
-
-// const setWarpseed = () => {
-//   boxEl.setAttribute("warpspeed", obj2attr(warpspeed))
-//   if (warpspeed.useWorker && !boxEl.is("worker")) {
-//     workerController.setValue(false)
-//     showError()
-//   }
-// }
-
-// const setRotation = () => boxEl.setAttribute("rotation", `${rotation.x} ${rotation.y} ${rotation.z}`)
-
-const setStats = (fpsOnly: boolean) => (document.body.className = fpsOnly ? "miniStat" : "")
-
+let f: dat.GUI
+let changeComp: (prop: string) => (val: any) => void
+let changeProp: (val: any) => void
 const gui = new dat.GUI()
-// // gui.close()
-gui.add({ Stat_FPS_Only: true }, "Stat_FPS_Only").onChange(setStats)
-// gui.add({ pause: false }, "pause").onChange(isPause => el[isPause ? "pause" : "play"]())
-// workerController = gui.add(warpspeed, "useWorker").onChange(setWarpseed)
-// gui
-//   .addColor({ background: "#000000" }, "background")
-//   .onChange(color => sceneEl.setAttribute("background", `color: ${color}`))
 
-// const warpspeedFolder = gui.addFolder("WarpSpeed")
-// warpspeedFolder.add(warpspeed, "width", resolutions).onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "height", resolutions).onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "speed", 0, 10, 0.1).onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "density", 0.1, 100.0, 0.1).onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "useCircles").onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "depthAlpha").onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "warpEffect").onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "warpEffectLength", 0, 100, 1).onChange(setWarpseed)
-// warpspeedFolder.add(warpspeed, "starScale", 1, 100, 1).onChange(setWarpseed)
-// warpspeedFolder.addColor(warpspeed, "backgroundColor").onChange(setWarpseed)
-// warpspeedFolder.addColor(warpspeed, "starColor").onChange(setWarpseed)
+f = gui.addFolder("Demo")
+f.add({ Stat_FPS_Only: true }, "Stat_FPS_Only").onChange(
+  fpsOnly => (document.body.className = fpsOnly ? "miniStat" : "")
+)
+f.addColor({ background: "#000000" }, "background").onChange(color => sceneEl.setAttribute("background", { color }))
+f.open()
 
-// const entityFolder = gui.addFolder("Entity")
-// entityFolder.open()
-// entityFolder.add(geometry, "primitive", ["box", "plane", "sphere", "cone", "ring"]).onChange(changePrimitive)
+f = gui.addFolder("Warpspeed")
+changeComp = changeData("warpspeed")
+Object.keys(warpspeed).forEach(prop => {
+  changeProp = changeComp(prop)
+  if (prop.toLowerCase().indexOf("color") === -1) {
+    const ctrl = f.add(boxEl.components.warpspeed.data, prop).onChange(changeProp).listen()
 
-// const rotationFolder = entityFolder.addFolder("Rotation")
-// rotationFolder.add(rotation, "x", 0, 360).onChange(setRotation)
-// rotationFolder.add(rotation, "y", 0, 360).onChange(setRotation)
-// rotationFolder.add(rotation, "z", 0, 360).onChange(setRotation)
+    switch (prop) {
+      case "width":
+      case "height":
+        ctrl.options([2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096])
+        break
+      case "useWorker":
+        ctrl.onFinishChange(testWorker)
+        break
+    }
+  } else {
+    f.addColor(boxEl.components.warpspeed.data, prop).onChange(changeProp).listen()
+  }
+})
+f.open()
 
-// changePrimitive("box")
-// setWarpseed()
-// // workerController.setValue(true)
+f = gui.addFolder("Position")
+Array.of("x", "y", "z").forEach(prop => void f.add(boxEl.object3D.position, prop).step(0.01).listen())
+f.open()
 
-// // / / // //
-// // / INTRO
-// // //  //
+f = gui.addFolder("Rotation")
+Array.of("x", "y", "z").forEach(
+  prop =>
+    void f
+      .add(boxEl.object3D.rotation, prop)
+      .min(0)
+      .max(2 * Math.PI)
+      .step(0.01)
+      .listen()
+)
+f.open()
 
-// const visibleHeightAtZDepth = (depth, camera) => {
-//   const cameraOffset = camera.position.z
-//   if (depth < cameraOffset) {
-//     depth -= cameraOffset
-//   } else {
-//     depth += cameraOffset
-//   }
-//   const vFOV = (camera.fov * Math.PI) / 180
-//   return 2 * Math.tan(vFOV / 2) * Math.abs(depth)
-// }
+f = gui.addFolder("Dimensions")
+changeComp = changeData("geometry")
+Array.of("width", "height", "depth").forEach(prop => {
+  changeProp = changeComp(prop)
+  f.add(boxEl.getAttribute("geometry"), prop).min(0.01).step(0.01).onChange(changeProp).listen()
+})
+f.open()
 
-// const visibleWidthAtZDepth = (depth, camera) => {
-//   const height = visibleHeightAtZDepth(depth, camera)
-//   return height * camera.aspect
-// }
+testWorker(warpspeed.useWorker)
 
-// const camera = cameraEl.getObject3D("camera")
-// // const distance = cameraEl.getAttribute("position").z - boxEl.getAttribute("position").z - boxEl.getAttribute("geometry").depth / 2
-// const distance = 1
-// console.log([distance, visibleWidthAtZDepth(distance, camera), visibleHeightAtZDepth(distance, camera)])
+if (AFRAME.utils.device.isMobile()) {
+  gui.close()
+  cameraEl.setAttribute("look-controls", { enabled: false }) // should be gyroscope only
+}
 
-// geometryController.width = visibleWidthAtZDepth(distance, camera)
+// / / // //
+// / INTRO
+// //  //
+
+const visibleHeightAtZDepth = (depth: number, camera: THREE.PerspectiveCamera) => {
+  const cameraOffset = camera.position.z
+  if (depth < cameraOffset) {
+    depth -= cameraOffset
+  } else {
+    depth += cameraOffset
+  }
+  const vFOV = (camera.fov * Math.PI) / 180
+  return 2 * Math.tan(vFOV / 2) * Math.abs(depth)
+}
+
+const visibleWidthAtZDepth = (depth: number, camera: THREE.PerspectiveCamera) => {
+  const height = visibleHeightAtZDepth(depth, camera)
+  return height * camera.aspect
+}
+
+const camera = cameraEl.getObject3D("camera")
+// const distance =
+//   cameraEl.getAttribute("position").z - boxEl.getAttribute("position").z - boxEl.getAttribute("geometry").depth / 2
+// boxEl.setAttribute("geometry", {
+//   width: visibleWidthAtZDepth(distance, camera),
+//   height: visibleHeightAtZDepth(distance, camera),
+// })

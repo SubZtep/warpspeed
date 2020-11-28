@@ -19,8 +19,6 @@ export default {
       commonjs(),
     ]
 
-    // console.log("JUGUU", pug.compileFile("index.pug", { pretty: true })())
-
     plugins.push(
       html({
         name: "index.html",

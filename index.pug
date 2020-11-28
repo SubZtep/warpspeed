@@ -7,30 +7,39 @@ html(lang="en")
     script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js")
     script(type="text/javascript" src="https://aframe.io/releases/1.0.4/aframe.min.js")
     script(type="text/javascript" src="https://unpkg.com/aframe-animation-timeline-component")
-    //- script(
-    //-   type="text/javascript"
-    //-   src="https://unpkg.com/aframe-animation-timeline-component@2.0.0/dist/aframe-animation-timeline-component.min.js"
-    //- )
     script(type="text/javascript" src="awt.min.js")
     link(rel="stylesheet" type="text/css" href="style.css")
   body.miniStat
-    a-scene(vr-mode-ui="enabled: false" stats background="color: #000000" animation-timeline="timeline: #intro; loop: true")
+    a-scene(
+      vr-mode-ui="enabled: false"
+      background="color: #000000"
+      animation-timeline="timeline: #intro; loop: true"
+      stats)
       a-assets
         a-timeline#intro
-          a-timeline-animation(select="a-scene")
+          //- a-timeline-animation(select="a-scene")
 
-          a-timeline-group
-            a-timeline-animation(select="#box" name="widescreenw" offset="1000")
-            a-timeline-animation(select="#box" name="widescreenh" offset="2000")
-            a-timeline-animation(select="#box" name="bgspacer")
+          //-a-timeline-group
+            a-timeline-animation(select="#box" name="pos")
+            //- a-timeline-animation(select="#box" name="redder")
 
-          //- a-timeline-group
-            a-timeline-animation(select="#box" name="speedup")
+          //-a-timeline-group
+            a-timeline-animation(select="#box" name="widescreenw")
 
-          //- a-timeline-group
-            a-timeline-animation(select="#box" name="redder")
+          //-
+            //-a-timeline-group
+              a-timeline-animation(select="#box" name="widescreenw" offset="1000")
+              a-timeline-animation(select="#box" name="widescreenh" offset="2000")
+              a-timeline-animation(select="#box" name="bgspacer")
+
+            //- a-timeline-group
+              a-timeline-animation(select="#box" name="speedup")
+
+            //- a-timeline-group
+              a-timeline-animation(select="#box" name="redder")
 
           a-mixin#star(
+            animation__pos="property: position.x; from: -3; to: 3; dur: 3000; easing: linear; autoplay: false; dir: reverse;"
             animation__widescreenw="property: geometry.width; from: 0.1; to: 3; dur: 3000; easing: linear; autoplay: false"
             animation__widescreenh="property: geometry.height; from: 0.2; to: 1; dur: 2000; easing: easeInOutCirc; autoplay: false"
             animation__bgspacer="property: warpspeed.backgroundColor; from: #000000; to: #100a1a; dur: 3000; type: color; easing: linear; autoplay: false"
@@ -38,10 +47,17 @@ html(lang="en")
             animation__redder="property: warpspeed.starColor; from: #ffffff; to: #ff0000; dur: 2000; type: color; easing: linear; autoplay: false"
           )
 
-      a-camera(position="0 0 2" look-controls="magicWindowTrackingEnabled: false")
+      a-camera(position="0 0 2")
 
-      a-entity#box(mixin="star" position="0 0 0" geometry="primitive: box; width: 3; height: 1; depth: 1")
-      //- a-entity#box(mixin="star" position="0 0 0" geometry="primitive: box; width: 3; height: 1; depth: 1" warpspeed)
+      a-entity#box(
+        mixin="star"
+        position="0 0 0"
+        geometry="primitive: box; width: 3; height: 1; depth: 1")
 
+    .error.hidden
+      p ⚠ Unable to transfer Canvas Control to a Worker thread! ⚠
+      tt Please, see the web console and component readme for details.
+      p ヾ( ￣O￣)ツ
     //- include github.pug
+
     //bundle

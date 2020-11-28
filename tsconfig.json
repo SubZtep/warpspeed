@@ -9,8 +9,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": false,
-    "baseUrl": ".",
-    "typeRoots": ["node_modules/@types"]
+    "baseUrl": "."
   },
   "include": ["*.ts"],
   "exclude": ["node_modules"],
